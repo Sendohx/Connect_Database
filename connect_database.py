@@ -1,11 +1,15 @@
+# -*- coding:UTF-8 -*-
+
 import pandas as pd
 import pymysql
 
 
 class ConnectDatabase:
-    """"""
+    """连接数据库组件"""
     def __init__(self, sql):
-        """"""
+        """
+        :param sql: 查询语句
+        """
         self.db_config = {
                             'host': '192.168.7.93',
                             'port': 3306,
@@ -16,6 +20,7 @@ class ConnectDatabase:
         self.sql = sql
 
     def connect(self):
+        """连接数据库"""
         host = self.db_config['host']
         port = self.db_config['port']
         username = self.db_config['username']
@@ -35,6 +40,7 @@ class ConnectDatabase:
             print(f'Error connecting to database:{e}')
 
     def get_data(self):
+        """获取数据"""
         if self.connect() is not None:
             with self.connect().cursor() as cursor:
                 cursor.execute(self.sql)

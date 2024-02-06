@@ -1,17 +1,19 @@
+# -*- coding:UTF-8 -*-
 
 import pandas as pd
-
 from datetime import datetime, timedelta
+
 from connect_database import ConnectDatabase
 
-root = '/nas92/xujiahao/data/raw'
-start_date = '20130101'
-end_date = '20240112'
-data_start_date = datetime.strptime(start_date, '%Y%m%d').date() - timedelta(days=700)
-data_start_date = data_start_date.strftime('%Y%m%d')
-assets = ['000985.CSI', '000300.SH', '000852.SH', '932000.CSI']
 
-# 指数及成分股日行情数据
+root = '/nas92/xujiahao/data/raw' # 原始数据存放路径
+start_date = '20130101' # 回测起始日期
+end_date = '20240112' # 回测结束日期
+data_start_date = datetime.strptime(start_date, '%Y%m%d').date() - timedelta(days=700) # 回测起始日期向前推700天，作为数据起始日期，避免回测期内出现空值
+data_start_date = data_start_date.strftime('%Y%m%d')
+assets = ['000985.CSI', '000300.SH', '000852.SH', '000905.CSI']  # 标的
+
+# 指数日行情，成分股日行情衍生
 temp_dict = dict()
 for asset in assets:
     table = 'AINDEXEODPRICES'

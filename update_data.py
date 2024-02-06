@@ -1,19 +1,29 @@
+# -*- coding:UTF-8 -*-
 
 import os
 import pandas as pd
-
 from datetime import datetime, timedelta
+
 from connect_database import ConnectDatabase
 
+
 class DataUpdater(ConnectDatabase):
+    """更新数据组件"""
     def __init__(self, sql, root, asset, start_date):
+        '''
+        :param sql: 数据库查询语句
+        :param root: 数据文件存放根目录
+        :param asset: 资产代码
+        :param start_date: 数据开始日期
+        '''
         super().__init__(sql)
         self.root = root
         self.asset = asset
         self.start_date = start_date
-        self.end_date = datetime.today().strftime("%Y%m%d")
+        self.end_date = datetime.today().strftime("%Y%m%d") # 结束日期默认为今天
 
     def update_ind_data(self):
+        '''更新指数数据'''
         files = os.listdir(self.root)
         for file in files:
             if file.startswith(f"ind_{asset}"):
@@ -30,6 +40,7 @@ class DataUpdater(ConnectDatabase):
         print(f'{asset} ind data updated')
 
     def update_stk_data(self):
+        '''更新股票数据'''
         files = os.listdir(self.root)
         for file in files:
             if file.startswith(f"stk_{asset}"):
@@ -51,7 +62,7 @@ if __name__ == '__main__':
     data_start_date = data_start_date.strftime('%Y%m%d')
     assets = ['000985.CSI', '000300.SH', '000852.SH', '932000.CSI', '000905.SH']
 
-    # 指数数据
+    # 指数日行情
     temp_dict = dict()
     for asset in assets:
         table = 'AINDEXEODPRICES'
@@ -61,8 +72,8 @@ if __name__ == '__main__':
         sql = f''' SELECT %s FROM %s WHERE %s AND %s ''' % (columns, table, condition1, condition2)
         du = DataUpdater(sql, root, asset, start_date)
         du.update_ind_data()
-    """
-    # 股票数据
+
+    # 成分股日行情
     for asset in assets:
         sql = f'''
                     SELECT A.S_INFO_WINDCODE, A.TRADE_DT, A.S_DQ_MV, A.FREE_SHARES_TODAY
@@ -79,5 +90,5 @@ if __name__ == '__main__':
                     '''
         du = DataUpdater(sql, root, asset, start_date)
         du.update_stk_data()
-    """
+
     print('done')
